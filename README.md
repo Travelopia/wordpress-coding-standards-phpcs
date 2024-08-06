@@ -1,4 +1,4 @@
-# WordPress Docker Images
+# Travelopia WordPress PHP Coding Standards
 
 ![maintenance-status](https://img.shields.io/badge/maintenance-actively--developed-brightgreen.svg)
 
