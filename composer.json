@@ -9,9 +9,11 @@
       "homepage": "https://www.travelopia.com"
     }
   ],
-  "require-dev": {
-    "dealerdirect/phpcodesniffer-composer-installer": "*",
+  "require": {
     "wp-coding-standards/wpcs": "^3.1"
+  },
+  "require-dev": {
+    "dealerdirect/phpcodesniffer-composer-installer": "*"
   },
   "scripts": {
     "install-codestandards": [
