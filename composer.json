@@ -1,0 +1,29 @@
+{
+  "name": "travelopia/wordpress-coding-standards",
+  "description": "Travelopia's PHP WordPress Coding Standards",
+  "type": "phpcodesniffer-standard",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Travelopia",
+      "homepage": "https://www.travelopia.com"
+    }
+  ],
+  "require-dev": {
+    "dealerdirect/phpcodesniffer-composer-installer": "*",
+    "wp-coding-standards/wpcs": "^3.1"
+  },
+  "scripts": {
+    "install-codestandards": [
+      "PHPCSStandards\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
+    ],
+    "post-install-cmd": [
+      "@install-codestandards"
+    ]
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  }
+}
