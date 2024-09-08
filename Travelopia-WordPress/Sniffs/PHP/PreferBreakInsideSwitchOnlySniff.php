@@ -36,31 +36,37 @@ class PreferBreakInsideSwitchOnlySniff implements Sniff {
 		// Get tokens.
 		$tokens = $phpcsFile->getTokens();
 
+		// Set Start and End pointers.
+		$searchStartPtr = $stackPtr + 1;
+		$caseEndPtr     = $tokens[ $stackPtr ]['scope_closer'];
+
 		// Search for continue inside the case.
-		$continuePtr = $phpcsFile->findNext( T_CONTINUE, $stackPtr, $tokens[ $stackPtr ]['scope_closer'] + 1 );
+		do {
+			// Find the next continue.
+			$continuePtr = $phpcsFile->findNext( T_CONTINUE, $searchStartPtr, $caseEndPtr + 1 );
 
-		// run a loop for all continue statements inside the case
-		while ( false !== $continuePtr ) {
-			// Search for the loop in which the continue is present.
-			$loopStartPtr = $phpcsFile->findPrevious( [ T_WHILE, T_FOR, T_FOREACH, T_DO ], $continuePtr, $stackPtr );
-			$loopEndPtr   = $tokens[ $loopStartPtr ]['scope_closer'];
+			// If continue is inside a loop, ignore it.
+			if ( false !== $continuePtr ) {
+				// Search for the loop in which the continue is present.
+				$loopStartPtr = $phpcsFile->findPrevious( [ T_WHILE, T_FOR, T_FOREACH, T_DO ], $continuePtr, $stackPtr );
+				$loopEndPtr   = $tokens[ $loopStartPtr ]['scope_closer'];
 
-			// If the continue is inside a loop, ignore it.
-			if ( $loopStartPtr && $continuePtr > $loopStartPtr && $continuePtr < $loopEndPtr ) {
-				$continuePtr = $phpcsFile->findNext( T_CONTINUE, $continuePtr + 1, $tokens[ $stackPtr ]['scope_closer'] + 1 );
-				continue;
+				// If the continue is inside a loop, ignore it.
+				if ( $loopStartPtr && $continuePtr > $loopStartPtr && $continuePtr < $loopEndPtr ) {
+					$searchStartPtr = $loopEndPtr + 1;
+					continue;
+				}
+
+				// Display warning.
+				$phpcsFile->addWarningOnLine(
+					'Use `break` or `continue x` where x is the nesting level to break out of the switch.',
+					$tokens[ $continuePtr ]['line'],
+					'UseBreakInsideSwitch'
+				);
+
+				// Set the search pointer to the next token.
+				$searchStartPtr = $continuePtr + 1;
 			}
-
-			// Add an error.
-			$phpcsFile->addWarningOnLine(
-				'Use `break` instead of `continue` inside a switch case.',
-				$tokens[ $continuePtr ]['line'],
-				'UseBreakInsideSwitch'
-			);
-
-			// Search for continue inside the case.
-			$continuePtr = $phpcsFile->findNext( T_CONTINUE, $continuePtr + 1, $tokens[ $stackPtr ]['scope_closer'] + 1 );
-		}
+		} while ( false !== $continuePtr );
 	}
-
 }
