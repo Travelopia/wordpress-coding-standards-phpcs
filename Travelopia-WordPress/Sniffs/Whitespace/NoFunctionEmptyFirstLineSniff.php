@@ -1,6 +1,6 @@
 <?php
 /**
- * Sniff: NoFunctionEmptyFirstLine.
+ * Sniff: NoFunctionEmptyFirstLineSniff.
  *
  * @package travelopia-coding-standards
  */
@@ -13,7 +13,7 @@ use PHP_CodeSniffer\Sniffs\Sniff;
 /**
  * Sniff to check if the first line in a function is not empty.
  */
-class NoFunctionEmptyFirstLine implements Sniff {
+class NoFunctionEmptyFirstLineSniff implements Sniff {
 
 	/**
 	 * Register the sniff.
