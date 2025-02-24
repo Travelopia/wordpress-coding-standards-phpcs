@@ -68,7 +68,6 @@
 		<exclude name="Squiz.Commenting.FunctionComment.InvalidReturn" />
 		<exclude name="Squiz.Commenting.FunctionComment.InvalidReturnNotVoid" />
 		<exclude name="Squiz.Commenting.FunctionComment.ParamCommentNotCapital" />
-		<exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamName" />
 		<exclude name="Squiz.Commenting.InlineComment.DocBlock" />
 		<exclude name="Squiz.Commenting.InlineComment.NotCapital" />
 		<exclude name="Squiz.Commenting.LongConditionClosingComment" />
