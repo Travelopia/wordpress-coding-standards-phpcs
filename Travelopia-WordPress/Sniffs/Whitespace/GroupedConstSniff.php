@@ -43,6 +43,17 @@ class GroupedConstSniff implements Sniff {
 
 		// Check if we don't have 2 newline characters before `const` statement.
 		if ( ! str_ends_with( $tokens[ $stackPtr - 1 ]['content'], "\n" ) || "\n" !== $tokens[ $stackPtr - 2 ]['content'] ) {
+			// Get the previous doc comment.
+			$prev_doc_comment = $phpcsFile->findPrevious( [ T_DOC_COMMENT_CLOSE_TAG ], $stackPtr - 1 );
+
+			// If the previous line is a doc comment, ignore this.
+			if (
+				! is_int( $prev_doc_comment )
+				|| ( T_DOC_COMMENT_CLOSE_TAG === $tokens[ $prev_doc_comment ]['code'] && $tokens[ $prev_doc_comment ]['line'] === $tokens[ $stackPtr ]['line'] - 1 )
+			) {
+				return;
+			}
+
 			// Get the previous `const` statement.
 			$prev_const = $phpcsFile->findPrevious( [ T_CONST ], $stackPtr - 1 );
 
