@@ -62,7 +62,7 @@ class AcfFieldGroupSniff implements Sniff
 		$seamless_token = [];
 
 		// Traverse all tokens before close parenthesis.
-		for ( $i = $open_parenthesis; $i <= $close_parenthesis; ++$i  ) {
+		for ( $i = $open_parenthesis; $i <= $close_parenthesis; ++$i ) {
 			// Look for encapsed strings.
 			if ( T_CONSTANT_ENCAPSED_STRING !== $tokens[ $i ]['code'] ) {
 				continue;

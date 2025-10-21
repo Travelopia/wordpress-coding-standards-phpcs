@@ -58,7 +58,7 @@ class FunctionArgsTypesSniff implements Sniff
 		$error     = false;
 
 		// Traverse all tokens before close parenthesis.
-		for ( $i = $open_parenthesis; $i <= $close_parenthesis; ++$i  ) {
+		for ( $i = $open_parenthesis; $i <= $close_parenthesis; ++$i ) {
 			if ( 'T_VARIABLE' === $tokens[ $i ]['type'] ) {
 				++$variables;
 
