@@ -1,6 +1,7 @@
 # --- Windows and Mac files
 [Tt]humbs.db
 .DS_Store
+.php-cs-fixer.cache
 
 # --- Root
 /*

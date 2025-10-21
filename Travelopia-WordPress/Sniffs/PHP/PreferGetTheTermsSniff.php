@@ -7,20 +7,21 @@
 
 namespace Travelopia\Sniffs\PHP;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 /**
  * Sniff to check if `wp_get_object_terms` is used.
  */
-class PreferGetTheTermsSniff implements Sniff {
-
+class PreferGetTheTermsSniff implements Sniff
+{
 	/**
 	 * Register the sniff.
 	 *
 	 * @return mixed[]
 	 */
-	public function register(): array {
+	public function register(): array
+	{
 		return [ T_STRING ];
 	}
 
@@ -32,7 +33,8 @@ class PreferGetTheTermsSniff implements Sniff {
 	 *
 	 * @return void
 	 */
-	public function process( File $phpcsFile, $stackPtr ): void {
+	public function process( File $phpcsFile, $stackPtr ): void
+	{
 		// Get tokens.
 		$tokens = $phpcsFile->getTokens();
 
@@ -41,9 +43,8 @@ class PreferGetTheTermsSniff implements Sniff {
 			$phpcsFile->addWarningOnLine(
 				'Use `get_the_terms()` instead of `wp_get_object_terms()`.',
 				$tokens[ $stackPtr ]['line'],
-				'AvoidWPGetObjectTerms'
+				'AvoidWPGetObjectTerms',
 			);
 		}
 	}
-
 }

@@ -7,20 +7,21 @@
 
 namespace Travelopia\Sniffs\Functions;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 /**
  * Sniff to check if function args have a type.
  */
-class FunctionArgsTypesSniff implements Sniff {
-
+class FunctionArgsTypesSniff implements Sniff
+{
 	/**
 	 * Register the sniff.
 	 *
 	 * @return mixed[]
 	 */
-	public function register(): array {
+	public function register(): array
+	{
 		return [ T_FUNCTION ];
 	}
 
@@ -32,18 +33,21 @@ class FunctionArgsTypesSniff implements Sniff {
 	 *
 	 * @return void
 	 */
-	public function process( File $phpcsFile, $stackPtr ): void {
+	public function process( File $phpcsFile, $stackPtr ): void
+	{
 		// Get tokens.
 		$tokens = $phpcsFile->getTokens();
 
 		// Get open parenthesis.
 		$open_parenthesis = $phpcsFile->findNext( [ T_OPEN_PARENTHESIS ], $stackPtr );
+
 		if ( false === $open_parenthesis ) {
 			return;
 		}
 
 		// Get close parenthesis.
 		$close_parenthesis = $phpcsFile->findNext( [ T_CLOSE_PARENTHESIS ], $open_parenthesis );
+
 		if ( false === $close_parenthesis ) {
 			return;
 		}
@@ -54,16 +58,18 @@ class FunctionArgsTypesSniff implements Sniff {
 		$error     = false;
 
 		// Traverse all tokens before close parenthesis.
-		for ( $i = $open_parenthesis; $i <= $close_parenthesis; $i ++ ) {
+		for ( $i = $open_parenthesis; $i <= $close_parenthesis; ++$i  ) {
 			if ( 'T_VARIABLE' === $tokens[ $i ]['type'] ) {
-				$variables ++;
+				++$variables;
+
 				if ( 0 === $strings ) {
 					$error = true;
 					break;
 				}
+
 				$strings = 0;
 			} elseif ( 'T_STRING' === $tokens[ $i ]['type'] ) {
-				$strings ++;
+				++$strings;
 			}
 		}
 
@@ -72,9 +78,8 @@ class FunctionArgsTypesSniff implements Sniff {
 			$phpcsFile->addWarningOnLine(
 				'All function args must have a type.',
 				$tokens[ $stackPtr ]['line'],
-				'Missing'
+				'Missing',
 			);
 		}
 	}
-
 }

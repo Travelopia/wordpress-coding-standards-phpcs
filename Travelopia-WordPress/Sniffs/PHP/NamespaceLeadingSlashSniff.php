@@ -13,14 +13,15 @@ use PHP_CodeSniffer\Sniffs\Sniff;
 /**
  * Sniff to avoid leading slash on namespaces.
  */
-class NamespaceLeadingSlashSniff implements Sniff {
-
+class NamespaceLeadingSlashSniff implements Sniff
+{
 	/**
 	 * Register the sniff.
 	 *
 	 * @return mixed[]
 	 */
-	public function register(): array {
+	public function register(): array
+	{
 		return [ T_NS_SEPARATOR ];
 	}
 
@@ -32,19 +33,20 @@ class NamespaceLeadingSlashSniff implements Sniff {
 	 *
 	 * @return void
 	 */
-	public function process( File $phpcsFile, $stackPtr ): void {
+	public function process( File $phpcsFile, $stackPtr ): void
+	{
 		// Get tokens.
 		$tokens = $phpcsFile->getTokens();
 
 		// Get return type.
 		$previous_whitespace = $phpcsFile->findPrevious( [ T_WHITESPACE ], $stackPtr - 1 );
+
 		if ( is_int( $previous_whitespace ) && $tokens[ $previous_whitespace ]['column'] === $tokens[ $stackPtr ]['column'] - 1 ) {
 			$phpcsFile->addWarningOnLine(
 				'Avoid leading slashes on namespaces. Add a `use` statement at the top of the file instead.',
 				$tokens[ $stackPtr ]['line'],
-				'Avoid'
+				'Avoid',
 			);
 		}
 	}
-
 }

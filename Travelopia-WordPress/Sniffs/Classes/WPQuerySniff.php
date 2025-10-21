@@ -7,20 +7,21 @@
 
 namespace Travelopia\Sniffs\Classes;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 /**
  * Sniffs related to WP_Query.
  */
-class WPQuerySniff implements Sniff {
-
+class WPQuerySniff implements Sniff
+{
 	/**
 	 * Register the sniff.
 	 *
 	 * @return mixed[]
 	 */
-	public function register(): array {
+	public function register(): array
+	{
 		return [ T_NEW ];
 	}
 
@@ -32,7 +33,8 @@ class WPQuerySniff implements Sniff {
 	 *
 	 * @return void
 	 */
-	public function process( File $phpcsFile, $stackPtr ): void {
+	public function process( File $phpcsFile, $stackPtr ): void
+	{
 		// Get tokens.
 		$tokens = $phpcsFile->getTokens();
 
@@ -46,24 +48,26 @@ class WPQuerySniff implements Sniff {
 
 		// Get open parenthesis.
 		$open_parenthesis = $phpcsFile->findNext( [ T_OPEN_PARENTHESIS ], $stackPtr );
+
 		if ( false === $open_parenthesis ) {
 			return;
 		}
 
 		// Get close parenthesis.
 		$close_parenthesis = $phpcsFile->findNext( [ T_CLOSE_PARENTHESIS ], $open_parenthesis );
+
 		if ( false === $close_parenthesis ) {
 			return;
 		}
 
 		// Keep track of args.
 		$required_args = [
-			"'post_type'"              => [
+			"'post_type'" => [
 				'exists'     => false,
 				'error'      => "Missing 'post_type' argument.",
 				'error_code' => 'MissingPostType',
 			],
-			"'no_found_rows'"          => [
+			"'no_found_rows'" => [
 				'exists'     => false,
 				'error'      => "Missing 'no_found_rows' argument.",
 				'error_code' => 'MissingNoFoundRows',
@@ -78,17 +82,17 @@ class WPQuerySniff implements Sniff {
 				'error'      => "Missing 'update_post_term_cache' argument.",
 				'error_code' => 'MissingPostTermCache',
 			],
-			"'fields'"                 => [
+			"'fields'" => [
 				'exists'     => false,
 				'error'      => "Missing 'fields' argument.",
 				'error_code' => 'MissingFields',
 			],
-			"'posts_per_page'"         => [
+			"'posts_per_page'" => [
 				'exists'     => false,
 				'error'      => "Missing 'posts_per_page' argument.",
 				'error_code' => 'MissingPostsPerPage',
 			],
-			"'ignore_sticky_posts'"    => [
+			"'ignore_sticky_posts'" => [
 				'exists'     => false,
 				'error'      => "Missing 'ignore_sticky_posts' argument.",
 				'error_code' => 'MissingIgnoreStickyPosts',
@@ -101,7 +105,7 @@ class WPQuerySniff implements Sniff {
 		$include_children = 0;
 
 		// Traverse all tokens before close parenthesis.
-		for ( $i = $open_parenthesis; $i <= $close_parenthesis; $i ++ ) {
+		for ( $i = $open_parenthesis; $i <= $close_parenthesis; ++$i  ) {
 			if ( 'T_VARIABLE' === $tokens[ $i ]['type'] ) {
 				// Bail if a variable is found within parenthesis.
 				return;
@@ -116,11 +120,11 @@ class WPQuerySniff implements Sniff {
 			}
 
 			if ( "'tax_query'" === $tokens[ $i ]['content'] ) {
-				$tax_query ++;
+				++$tax_query;
 			} elseif ( "'taxonomy'" === $tokens[ $i ]['content'] ) {
-				$taxonomies ++;
+				++$taxonomies;
 			} elseif ( "'include_children'" === $tokens[ $i ]['content'] ) {
-				$include_children ++;
+				++$include_children;
 			}
 		}
 
@@ -130,7 +134,7 @@ class WPQuerySniff implements Sniff {
 				$phpcsFile->addWarningOnLine(
 					$required_arg['error'],
 					$tokens[ $stackPtr ]['line'],
-					$required_arg['error_code']
+					$required_arg['error_code'],
 				);
 			}
 		}
@@ -140,9 +144,8 @@ class WPQuerySniff implements Sniff {
 			$phpcsFile->addWarningOnLine(
 				"'include_children' is required for each taxonomy query.",
 				$tokens[ $stackPtr ]['line'],
-				'MissingIncludeChildren'
+				'MissingIncludeChildren',
 			);
 		}
 	}
-
 }

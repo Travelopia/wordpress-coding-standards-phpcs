@@ -5,7 +5,7 @@ use PhpCsFixer\Runner\Parallel\ParallelConfigFactory;
 use Travelopia\WordPressCodingStandards\TravelopiaFixersConfig;
 
 $finder = Finder::create()
-	->in( __DIR__ )
+	->in( dirname( __DIR__ ) )
 	->name( '*.php' )
 	->ignoreVCS( true )
 	->exclude( 'vendor' );
