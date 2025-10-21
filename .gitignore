@@ -8,6 +8,7 @@
 !.gitignore
 !composer.json
 !composer.lock
+!php-cs-fixer
 !README.md
 !LICENSE
 

@@ -21,12 +21,17 @@
 
 	<rule ref="WordPress-Extra">
 		<exclude name="Generic.Arrays.DisallowShortArraySyntax.Found" />
+		<exclude name="Generic.Classes.OpeningBraceSameLine.BraceOnNewLine" />
+		<exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning" />
+		<exclude name="Generic.Functions.OpeningFunctionBraceKernighanRitchie.BraceOnNewLine" />
+		<exclude name="WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned" />
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
 		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
 		<exclude name="WordPress.PHP.DisallowShortTernary.Found" />
+		<exclude name="WordPress.WP.Capabilities.Unknown" />
 		<exclude name="Universal.Arrays.DisallowShortArraySyntax.Found" />
 		<exclude name="Universal.Operators.DisallowShortTernary.Found" />
 		<exclude name="Universal.UseStatements.NoUselessAliases.Found" />
-		<exclude name="WordPress.WP.Capabilities.Unknown" />
 	</rule>
 
 	<rule ref="WordPress.Arrays.MultipleStatementAlignment">
@@ -53,10 +58,12 @@
 		<exclude name="Squiz.Commenting.BlockComment.LastLineIndent" />
 		<exclude name="Squiz.Commenting.BlockComment.WrongStart" />
 		<exclude name="Squiz.Commenting.BlockComment.NoEmptyLineAfter" />
+		<exclude name="Squiz.Commenting.ClassComment.Missing" />
 		<exclude name="Squiz.Commenting.ClassComment.TagNotAllowed" />
 		<exclude name="Squiz.Commenting.ClosingDeclarationComment.Missing" />
 		<exclude name="Squiz.Commenting.FileComment.IncorrectAuthor" />
 		<exclude name="Squiz.Commenting.FileComment.IncorrectCopyright" />
+		<exclude name="Squiz.Commenting.FileComment.Missing" />
 		<exclude name="Squiz.Commenting.FileComment.MissingAuthorTag" />
 		<exclude name="Squiz.Commenting.FileComment.MissingSubpackageTag" />
 		<exclude name="Squiz.Commenting.FileComment.MissingCopyrightTag" />
@@ -64,6 +71,7 @@
 		<exclude name="Squiz.Commenting.FileComment.SubpackageTagOrder" />
 		<exclude name="Squiz.Commenting.FileComment.AuthorTagOrder" />
 		<exclude name="Squiz.Commenting.FileComment.CopyrightTagOrder" />
+		<exclude name="Squiz.Commenting.FunctionComment.EmptyThrows" />
 		<exclude name="Squiz.Commenting.FunctionComment.IncorrectParamVarName" />
 		<exclude name="Squiz.Commenting.FunctionComment.InvalidReturn" />
 		<exclude name="Squiz.Commenting.FunctionComment.InvalidReturnNotVoid" />

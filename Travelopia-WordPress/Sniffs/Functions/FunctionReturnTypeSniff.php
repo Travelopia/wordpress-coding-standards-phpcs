@@ -11,7 +11,7 @@ use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
 
 /**
- * Sniff to check if the first line of a function contains a comment.
+ * Sniff to check if functions have a return type.
  */
 class FunctionReturnTypeSniff implements Sniff {
 
