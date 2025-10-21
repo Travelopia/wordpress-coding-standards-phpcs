@@ -7,20 +7,21 @@
 
 namespace Travelopia\Sniffs\PHP;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 /**
  * Sniff to check if `wpautop` is used.
  */
-class PreferTheContentOverWPAutoPSniff implements Sniff {
-
+class PreferTheContentOverWPAutoPSniff implements Sniff
+{
 	/**
 	 * Register the sniff.
 	 *
 	 * @return mixed[]
 	 */
-	public function register(): array {
+	public function register(): array
+	{
 		return [ T_STRING ];
 	}
 
@@ -32,7 +33,8 @@ class PreferTheContentOverWPAutoPSniff implements Sniff {
 	 *
 	 * @return void
 	 */
-	public function process( File $phpcsFile, $stackPtr ): void {
+	public function process( File $phpcsFile, $stackPtr ): void
+	{
 		// Get tokens.
 		$tokens = $phpcsFile->getTokens();
 
@@ -40,9 +42,8 @@ class PreferTheContentOverWPAutoPSniff implements Sniff {
 			$phpcsFile->addWarningOnLine(
 				'Use `apply_filters( \'the_content\', $content )` instead of `wpautop()`.',
 				$tokens[ $stackPtr ]['line'],
-				'UseTheContent'
+				'UseTheContent',
 			);
 		}
 	}
-
 }

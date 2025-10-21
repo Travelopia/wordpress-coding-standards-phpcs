@@ -7,20 +7,21 @@
 
 namespace Travelopia\Sniffs\PHP;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 /**
  * Sniff to check if `use` statements have slash prefix for namespaces.
  */
-class NoLeadingSlashOnUseConstSniff implements Sniff {
-
+class NoLeadingSlashOnUseConstSniff implements Sniff
+{
 	/**
 	 * Register the sniff.
 	 *
 	 * @return mixed[]
 	 */
-	public function register(): array {
+	public function register(): array
+	{
 		return [ T_STRING ];
 	}
 
@@ -32,7 +33,8 @@ class NoLeadingSlashOnUseConstSniff implements Sniff {
 	 *
 	 * @return void
 	 */
-	public function process( File $phpcsFile, $stackPtr ): void {
+	public function process( File $phpcsFile, $stackPtr ): void
+	{
 		// Get tokens.
 		$tokens = $phpcsFile->getTokens();
 
@@ -43,6 +45,7 @@ class NoLeadingSlashOnUseConstSniff implements Sniff {
 
 		// Check if we are within a `use` statement.
 		$previous_use = $phpcsFile->findPrevious( T_USE, $stackPtr );
+
 		if ( ! is_int( $previous_use ) || $tokens[ $previous_use ]['line'] !== $tokens[ $stackPtr ]['line'] ) {
 			return;
 		}
@@ -52,9 +55,8 @@ class NoLeadingSlashOnUseConstSniff implements Sniff {
 			$phpcsFile->addWarningOnLine(
 				'Avoid prefixing namespace with a slash.',
 				$tokens[ $stackPtr ]['line'],
-				'AvoidSlash'
+				'AvoidSlash',
 			);
 		}
 	}
-
 }

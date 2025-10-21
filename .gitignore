@@ -1,6 +1,7 @@
 # --- Windows and Mac files
 [Tt]humbs.db
 .DS_Store
+.php-cs-fixer.cache
 
 # --- Root
 /*
@@ -8,6 +9,7 @@
 !.gitignore
 !composer.json
 !composer.lock
+!php-cs-fixer
 !README.md
 !LICENSE
 

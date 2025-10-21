@@ -7,20 +7,21 @@
 
 namespace Travelopia\Sniffs\PHP;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 /**
  * Sniff to check if PHPStan errors are ignored.
  */
-class AvoidIgnoringPHPStanSniff implements Sniff {
-
+class AvoidIgnoringPHPStanSniff implements Sniff
+{
 	/**
 	 * Register the sniff.
 	 *
 	 * @return mixed[]
 	 */
-	public function register(): array {
+	public function register(): array
+	{
 		return [ T_COMMENT ];
 	}
 
@@ -32,7 +33,8 @@ class AvoidIgnoringPHPStanSniff implements Sniff {
 	 *
 	 * @return void
 	 */
-	public function process( File $phpcsFile, $stackPtr ): void {
+	public function process( File $phpcsFile, $stackPtr ): void
+	{
 		// Get tokens.
 		$tokens = $phpcsFile->getTokens();
 
@@ -41,9 +43,8 @@ class AvoidIgnoringPHPStanSniff implements Sniff {
 			$phpcsFile->addWarningOnLine(
 				"Don't ignore PHPStan errors. Try to address the issue by adding additional checks.",
 				$tokens[ $stackPtr ]['line'],
-				'Avoid'
+				'Avoid',
 			);
 		}
 	}
-
 }

@@ -7,20 +7,21 @@
 
 namespace Travelopia\Sniffs\Classes;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 /**
  * Sniffs related to WP_Query params.
  */
-class WPQueryParamsSniff implements Sniff {
-
+class WPQueryParamsSniff implements Sniff
+{
 	/**
 	 * Register the sniff.
 	 *
 	 * @return mixed[]
 	 */
-	public function register(): array {
+	public function register(): array
+	{
 		return [ T_CONSTANT_ENCAPSED_STRING ];
 	}
 
@@ -32,7 +33,8 @@ class WPQueryParamsSniff implements Sniff {
 	 *
 	 * @return void
 	 */
-	public function process( File $phpcsFile, $stackPtr ): void {
+	public function process( File $phpcsFile, $stackPtr ): void
+	{
 		// Get tokens.
 		$tokens = $phpcsFile->getTokens();
 
@@ -40,5 +42,4 @@ class WPQueryParamsSniff implements Sniff {
 			$phpcsFile->addWarning( 'Using `post__not_in` should be done with caution.', $stackPtr, 'post__not_in' );
 		}
 	}
-
 }

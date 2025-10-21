@@ -7,20 +7,21 @@
 
 namespace Travelopia\Sniffs\Functions;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 /**
  * Sniffs to check for ACF Field Groups.
  */
-class AcfFieldGroupSniff implements Sniff {
-
+class AcfFieldGroupSniff implements Sniff
+{
 	/**
 	 * Register the sniff.
 	 *
 	 * @return mixed[]
 	 */
-	public function register(): array {
+	public function register(): array
+	{
 		return [ T_STRING ];
 	}
 
@@ -32,7 +33,8 @@ class AcfFieldGroupSniff implements Sniff {
 	 *
 	 * @return void
 	 */
-	public function process( File $phpcsFile, $stackPtr ): void {
+	public function process( File $phpcsFile, $stackPtr ): void
+	{
 		// Get tokens.
 		$tokens = $phpcsFile->getTokens();
 
@@ -43,12 +45,14 @@ class AcfFieldGroupSniff implements Sniff {
 
 		// Get open parenthesis.
 		$open_parenthesis = $phpcsFile->findNext( [ T_OPEN_PARENTHESIS ], $stackPtr );
+
 		if ( false === $open_parenthesis ) {
 			return;
 		}
 
 		// Get close parenthesis.
 		$close_parenthesis = $phpcsFile->findNext( [ T_CLOSE_PARENTHESIS ], $open_parenthesis );
+
 		if ( false === $close_parenthesis ) {
 			return;
 		}
@@ -58,7 +62,7 @@ class AcfFieldGroupSniff implements Sniff {
 		$seamless_token = [];
 
 		// Traverse all tokens before close parenthesis.
-		for ( $i = $open_parenthesis; $i <= $close_parenthesis; $i ++ ) {
+		for ( $i = $open_parenthesis; $i <= $close_parenthesis; ++$i ) {
 			// Look for encapsed strings.
 			if ( T_CONSTANT_ENCAPSED_STRING !== $tokens[ $i ]['code'] ) {
 				continue;
@@ -80,9 +84,8 @@ class AcfFieldGroupSniff implements Sniff {
 			$phpcsFile->addWarningOnLine(
 				'ACF field groups must have "seamless" style.',
 				$tokens[ $stackPtr ]['line'],
-				'MissingSeamless'
+				'MissingSeamless',
 			);
 		}
 	}
-
 }
