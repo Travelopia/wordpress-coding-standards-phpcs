@@ -32,16 +32,15 @@ final class CommentPunctuationFixer extends AbstractFixer
 	protected function applyFix( SplFileInfo $file, Tokens $tokens ): void
 	{
 		for ( $index = 0; $index < $tokens->count(); ++$index ) {
-			if ( ! $tokens[ $index ]->isGivenKind( T_COMMENT ) ) {
+			if ( ! $tokens[ $index ]->isGivenKind( [ T_COMMENT, T_DOC_COMMENT ] ) ) {
 				continue;
 			}
 
-			// Skip DocBlock comments.
 			if ( $tokens[ $index ]->isGivenKind( T_DOC_COMMENT ) ) {
-				continue;
+				$this->fixDocBlockComment( $tokens, $index );
+			} else {
+				$this->ensureCommentEndsWithPunctuation( $tokens, $index );
 			}
-
-			$this->ensureCommentEndsWithPunctuation( $tokens, $index );
 		}
 	}
 
@@ -73,6 +72,21 @@ final class CommentPunctuationFixer extends AbstractFixer
 			return;
 		}
 
+		// Skip PHPCS and PHPStan directives (phpcs:ignore, phpstan-ignore-line, etc.)
+		if ( preg_match( '/(phpcs|phpstan):[a-z-]+$/i', $commentText ) ) {
+			return;
+		}
+
+		// Skip comments ending with version numbers (e.g., "Version: 1.0.0")
+		if ( preg_match( '/\d+\.\d+(\.\d+)?$/i', $commentText ) ) {
+			return;
+		}
+
+		// Skip WordPress template headers and plugin/theme metadata (e.g., "Template Name: Components")
+		if ( preg_match( '/^(Template Name|Template Post Type|Plugin Name|Theme Name|Author|Version|Description|Text Domain|Domain Path|Requires at least|Requires PHP|License|License URI|Tags):.+$/i', $commentText ) ) {
+			return;
+		}
+
 		// Check if the comment already ends with punctuation or special characters.
 		$lastChar = mb_substr( $commentText, -1 );
 
@@ -97,6 +111,18 @@ final class CommentPunctuationFixer extends AbstractFixer
 		}
 
 		$tokens[ $index ] = new Token( [ T_COMMENT, $newContent ] );
+	}
+
+	private function fixDocBlockComment( Tokens $tokens, int $index ): void
+	{
+		$content = $tokens[ $index ]->getContent();
+
+		// Check if this DocBlock contains WordPress template headers.
+		if ( preg_match( '/\* (Template Name|Template Post Type|Plugin Name|Theme Name|Author|Version|Description|Text Domain|Domain Path|Requires at least|Requires PHP|License|License URI|Tags):[^\n]+\.\s*$/im', $content ) ) {
+			// Remove trailing period from WordPress headers.
+			$newContent = preg_replace( '/(\* (?:Template Name|Template Post Type|Plugin Name|Theme Name|Author|Version|Description|Text Domain|Domain Path|Requires at least|Requires PHP|License|License URI|Tags):[^\n]+)\.\s*$/im', '$1', $content );
+			$tokens[ $index ] = new Token( [ T_DOC_COMMENT, $newContent ] );
+		}
 	}
 
 	public function getName(): string

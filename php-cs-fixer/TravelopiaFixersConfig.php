@@ -219,6 +219,9 @@ class TravelopiaFixersConfig
 				'on_multiline'                     => 'ensure_fully_multiline',
 				'keep_multiple_spaces_after_comma' => false,
 			],
+
+			// Disable statement indentation to allow proper indentation in template files.
+			'statement_indentation' => false,
 		];
 	}
 }
