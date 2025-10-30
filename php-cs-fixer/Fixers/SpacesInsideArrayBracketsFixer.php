@@ -133,12 +133,23 @@ final class SpacesInsideArrayBracketsFixer extends AbstractFixer
 			return;
 		}
 
-		// Only add spaces if the index is a variable (starts with $).
+		// Only add spaces if the index is a variable (starts with $) or a class constant (e.g., self::FIELD_NAME).
 
-		// Skip for string literals, constants, etc.
+		// Check for variables or class constants.
 		$isVariable = $tokens[ $nextIndex ]->isGivenKind( T_VARIABLE );
 
-		if ( ! $isVariable ) {
+		// Check if it's a class constant (self::, static::, ClassName::).
+		$isClassConstant = false;
+
+		if ( $tokens[ $nextIndex ]->isGivenKind( [ T_STRING, T_STATIC ] ) ) {
+			$afterString = $tokens->getNextMeaningfulToken( $nextIndex );
+
+			if ( null !== $afterString && $tokens[ $afterString ]->isGivenKind( T_DOUBLE_COLON ) ) {
+				$isClassConstant = true;
+			}
+		}
+
+		if ( ! $isVariable && ! $isClassConstant ) {
 			// Remove any existing spaces for non-variables.
 			if ( $tokens[ $index + 1 ]->isWhitespace() ) {
 				$tokens->clearAt( $index + 1 );
