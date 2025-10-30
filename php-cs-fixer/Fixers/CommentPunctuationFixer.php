@@ -120,7 +120,7 @@ final class CommentPunctuationFixer extends AbstractFixer
 		// Check if this DocBlock contains WordPress template headers.
 		if ( preg_match( '/\* (Template Name|Template Post Type|Plugin Name|Theme Name|Author|Version|Description|Text Domain|Domain Path|Requires at least|Requires PHP|License|License URI|Tags):[^\n]+\.\s*$/im', $content ) ) {
 			// Remove trailing period from WordPress headers.
-			$newContent = preg_replace( '/(\* (?:Template Name|Template Post Type|Plugin Name|Theme Name|Author|Version|Description|Text Domain|Domain Path|Requires at least|Requires PHP|License|License URI|Tags):[^\n]+)\.\s*$/im', '$1', $content );
+			$newContent       = preg_replace( '/(\* (?:Template Name|Template Post Type|Plugin Name|Theme Name|Author|Version|Description|Text Domain|Domain Path|Requires at least|Requires PHP|License|License URI|Tags):[^\n]+)\.\s*$/im', '$1', $content );
 			$tokens[ $index ] = new Token( [ T_DOC_COMMENT, $newContent ] );
 		}
 	}

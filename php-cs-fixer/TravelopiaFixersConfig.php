@@ -95,6 +95,9 @@ class TravelopiaFixersConfig
 			// Nullable type declaration.
 			'nullable_type_declaration_for_default_null_value' => true,
 
+			// Add void return type to functions that don't return anything.
+			'void_return' => true,
+
 			// Array syntax.
 			'array_syntax' => [
 				'syntax' => 'short',
