@@ -149,8 +149,12 @@ final class SpacesInsideArrayBracketsFixer extends AbstractFixer
 			}
 		}
 
-		if ( ! $isVariable && ! $isClassConstant ) {
-			// Remove any existing spaces for non-variables.
+		// Check if it's a string literal (T_CONSTANT_ENCAPSED_STRING) or integer literal (T_LNUMBER).
+		$isStringOrInteger = $tokens[ $nextIndex ]->isGivenKind( [ T_CONSTANT_ENCAPSED_STRING, T_LNUMBER ] );
+
+		// If it's a string or integer literal, ensure no spaces (WordPress rule).
+		if ( $isStringOrInteger ) {
+			// Remove any existing spaces for string/integer literals.
 			if ( $tokens[ $index + 1 ]->isWhitespace() ) {
 				$tokens->clearAt( $index + 1 );
 				$closeIndex = $tokens->findBlockEnd( Tokens::BLOCK_TYPE_INDEX_SQUARE_BRACE, $index );

@@ -8,6 +8,7 @@ use Travelopia\WordPressCodingStandards\Fixers\BlankLineBeforeCommentFixer;
 use Travelopia\WordPressCodingStandards\Fixers\CommentPunctuationFixer;
 use Travelopia\WordPressCodingStandards\Fixers\DocBlockOnNewLineFixer;
 use Travelopia\WordPressCodingStandards\Fixers\SpacesInsideArrayBracketsFixer;
+use Travelopia\WordPressCodingStandards\Fixers\SwitchCaseBodyOnNextLineFixer;
 
 /**
  * Helper class to easily create a PHP-CS-Fixer config with Travelopia custom fixers.
@@ -40,6 +41,7 @@ class TravelopiaFixersConfig
 			new CommentPunctuationFixer(),
 			new BlankLineAfterControlStructureFixer(),
 			new DocBlockOnNewLineFixer(),
+			new SwitchCaseBodyOnNextLineFixer(),
 		];
 	}
 
@@ -117,6 +119,9 @@ class TravelopiaFixersConfig
 
 			// Custom rule: docblock on new line.
 			'Travelopia/docblock_on_new_line' => true,
+
+			// Custom rule: switch case body on next line (PSR2.ControlStructures.SwitchDeclaration.BodyOnNextLineCASE).
+			'Travelopia/switch_case_body_on_next_line' => true,
 
 			// Array indentation.
 			'array_indentation' => true,
@@ -225,6 +230,9 @@ class TravelopiaFixersConfig
 
 			// Disable statement indentation to allow proper indentation in template files.
 			'statement_indentation' => false,
+
+			// The @PSR12 preset already handles this correctly, but we ensure switch_case_space is enabled.
+			'switch_case_space' => true,
 		];
 	}
 }
