@@ -72,8 +72,8 @@ final class CommentPunctuationFixer extends AbstractFixer
 			return;
 		}
 
-		// Skip PHPCS and PHPStan directives (phpcs:ignore, phpstan-ignore-line, etc.)
-		if ( preg_match( '/(phpcs|phpstan):[a-z-]+$/i', $commentText ) ) {
+		// Skip PHPCS and PHPStan directives (phpcs:ignore, phpcs:disable SniffName, phpstan-ignore-line, etc.)
+		if ( preg_match( '/^\s*(phpcs|phpstan):/i', $commentText ) ) {
 			return;
 		}
 
