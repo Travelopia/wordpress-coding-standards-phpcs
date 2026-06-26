@@ -109,6 +109,14 @@ final class BlankLineBeforeCommentFixer extends AbstractFixer
 			return; // Comment is the first line in a block.
 		}
 
+		// Don't separate consecutive comments. A run of // lines is a single
+		// comment block, and phpcs (Squiz.Commenting.InlineComment.SpacingAfter)
+		// forbids a blank line between them — inserting one creates an
+		// unresolvable conflict between this fixer and phpcs/phpcbf.
+		if ( $tokens[ $prevIndex ]->isComment() ) {
+			return; // Previous line is also a comment; keep them grouped.
+		}
+
 		// Check if the comment is inside a function call (within parentheses).
 		if ( $this->isInsideFunctionCall( $tokens, $index ) ) {
 			return; // Comment is inside a function call, skip.

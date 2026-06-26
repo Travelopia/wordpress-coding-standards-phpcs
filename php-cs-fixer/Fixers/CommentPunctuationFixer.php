@@ -64,16 +64,24 @@ final class CommentPunctuationFixer extends AbstractFixer
 		}
 
 		// Trim whitespace but keep the newline at the end if it exists.
+		// Trim both ends: the leading space after the marker must go so that
+		// start-anchored checks below (control directives, template headers)
+		// match. Output is rebuilt from $content, so this only affects analysis.
 		$hasNewline  = str_ends_with( $commentText, "\n" );
-		$commentText = rtrim( $commentText );
+		$commentText = trim( $commentText );
 
 		// Skip empty comments.
 		if ( empty( $commentText ) ) {
 			return;
 		}
 
-		// Skip PHPCS and PHPStan directives (phpcs:ignore, phpstan-ignore-line, etc.)
-		if ( preg_match( '/(phpcs|phpstan):[a-z-]+$/i', $commentText ) ) {
+		// Skip PHPCS / PHPStan / Psalm control directives. These begin the
+		// comment and may carry arguments (sniff codes, rule names) — e.g.
+		// `phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase`.
+		// Appending a period corrupts the directive (the sniff code becomes
+		// `...UsedPropertyNotSnakeCase.`) and silently disables the suppression,
+		// so match at the start regardless of any trailing arguments.
+		if ( preg_match( '/^@?(phpcs|phpstan|psalm)[:-]/i', $commentText ) ) {
 			return;
 		}
 
