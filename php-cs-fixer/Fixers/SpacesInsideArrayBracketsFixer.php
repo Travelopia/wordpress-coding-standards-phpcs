@@ -90,6 +90,13 @@ final class SpacesInsideArrayBracketsFixer extends AbstractFixer
 
 	private function fixArrayAccessSpacing( Tokens $tokens, int $index ): void
 	{
+		// Never touch array access inside string interpolation ("$a[0]", "$a[$i]", "$a[key]").
+		// PHP tokenizes the offset differently there and inserting spaces produces a fatal
+		// parse error in the simple-interpolation syntax (e.g. "$a[ 0 ]").
+		if ( $this->isStringInterpolationAccess( $tokens, $index ) ) {
+			return;
+		}
+
 		// Find the closing bracket for array access.
 		$closeIndex = $tokens->findBlockEnd( Tokens::BLOCK_TYPE_INDEX_SQUARE_BRACE, $index );
 
@@ -184,6 +191,58 @@ final class SpacesInsideArrayBracketsFixer extends AbstractFixer
 		} elseif ( ' ' !== $tokens[ $closeIndex - 1 ]->getContent() ) {
 			$tokens[ $closeIndex - 1 ] = new Token( [ T_WHITESPACE, ' ' ] );
 		}
+	}
+
+	/**
+	 * Detect whether a '[' opens array access inside a double-quoted string, heredoc,
+	 * or backtick expression (string interpolation). Offsets there must be left exactly
+	 * as-is: PHP tokenizes them differently and spaces are either a fatal parse error
+	 * (simple syntax: "$a[0]") or unwanted noise (complex syntax: "{$a[$i]}").
+	 */
+	private function isStringInterpolationAccess( Tokens $tokens, int $index ): bool
+	{
+		// The offset token sits directly after the '['.
+		$offsetIndex = $index + 1;
+
+		// T_NUM_STRING only ever appears as an array offset inside simple string
+		// interpolation (e.g. "$a[0]"), so it is a definitive signal on its own.
+		if ( isset( $tokens[ $offsetIndex ] ) && $tokens[ $offsetIndex ]->isGivenKind( T_NUM_STRING ) ) {
+			return true;
+		}
+
+		// For "$a[$i]" and "$a[key]" the offset is T_VARIABLE / T_STRING, which also occur
+		// in normal code. Disambiguate via the base being indexed: in interpolation the '['
+		// is preceded by a single T_VARIABLE that is itself preceded by a string-boundary
+		// or interpolation-opening token. Those tokens never precede an indexed variable in
+		// ordinary PHP, so there is no risk of a false positive.
+		$baseIndex = $index - 1;
+
+		if ( ! isset( $tokens[ $baseIndex ] ) || ! $tokens[ $baseIndex ]->isGivenKind( T_VARIABLE ) ) {
+			return false;
+		}
+
+		$beforeBaseIndex = $baseIndex - 1;
+
+		if ( ! isset( $tokens[ $beforeBaseIndex ] ) ) {
+			return false;
+		}
+
+		$beforeBase = $tokens[ $beforeBaseIndex ];
+
+		// Interpolation-context markers that can immediately precede the base variable:
+		// - T_ENCAPSED_AND_WHITESPACE: literal text before the variable ("_$a[..]").
+		// - T_START_HEREDOC: the variable is the first thing in a heredoc/nowdoc body.
+		// - T_CURLY_OPEN / T_DOLLAR_OPEN_CURLY_BRACES: complex syntax ("{$a[..]}", "${a[..]}").
+		if ( $beforeBase->isGivenKind( [ T_ENCAPSED_AND_WHITESPACE, T_START_HEREDOC, T_CURLY_OPEN, T_DOLLAR_OPEN_CURLY_BRACES ] ) ) {
+			return true;
+		}
+
+		// The variable is the first content of a double-quoted or backtick string ("$a[..]").
+		if ( $beforeBase->equalsAny( [ '"', '`' ] ) ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	public function getName(): string
