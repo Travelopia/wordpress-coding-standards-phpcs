@@ -71,3 +71,14 @@ $ ./vendor/bin/php-cs-fixer fix --dry-run --diff
 # Fix issues
 $ ./vendor/bin/php-cs-fixer fix
 ```
+
+## Development
+
+### Running tests
+
+The custom PHP-CS-Fixer fixers are covered by a PHPUnit suite:
+
+```bash
+$ composer install
+$ composer test
+```

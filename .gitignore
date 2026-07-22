@@ -10,8 +10,10 @@
 !composer.json
 !composer.lock
 !php-cs-fixer
+!phpunit.xml.dist
 !README.md
 !LICENSE
+!tests
 
 # -- Rules
 !Travelopia-WordPress
