@@ -53,6 +53,14 @@ final class CommentPunctuationFixer extends AbstractFixer
 			return;
 		}
 
+		// Skip every line of a comment block except the last one. PHP tokenizes
+		// each `//` line as its own T_COMMENT, so punctuating them individually
+		// drops a period into the middle of a sentence that wraps across lines.
+		// Only the line that closes the block terminates a sentence.
+		if ( $this->isContinuedOnNextLine( $tokens, $index ) ) {
+			return;
+		}
+
 		// Handle single-line comments (// or #)
 		$commentText = $content;
 
@@ -119,6 +127,44 @@ final class CommentPunctuationFixer extends AbstractFixer
 		}
 
 		$tokens[ $index ] = new Token( [ T_COMMENT, $newContent ] );
+	}
+
+	/**
+	 * Whether the line comment at $index is immediately followed by another
+	 * line comment on the very next line — i.e. both belong to one block.
+	 *
+	 * Exactly one newline may separate them. A blank line, code, or a docblock
+	 * in between ends the block, which makes $index its last line.
+	 */
+	private function isContinuedOnNextLine( Tokens $tokens, int $index ): bool
+	{
+		// PHP keeps the trailing newline inside a `//` token; a `#` token or a
+		// comment at the end of a file may not have one.
+		$newlines  = str_ends_with( $tokens[ $index ]->getContent(), "\n" ) ? 1 : 0;
+		$nextIndex = $index + 1;
+
+		if ( ! isset( $tokens[ $nextIndex ] ) ) {
+			return false;
+		}
+
+		// Indentation between the two comments is expected; a second newline is
+		// a blank line and separates them into different blocks.
+		if ( $tokens[ $nextIndex ]->isWhitespace() ) {
+			$newlines += substr_count( $tokens[ $nextIndex ]->getContent(), "\n" );
+			++$nextIndex;
+		}
+
+		if ( 1 !== $newlines || ! isset( $tokens[ $nextIndex ] ) ) {
+			return false;
+		}
+
+		if ( ! $tokens[ $nextIndex ]->isGivenKind( T_COMMENT ) ) {
+			return false;
+		}
+
+		$nextContent = $tokens[ $nextIndex ]->getContent();
+
+		return str_starts_with( $nextContent, '//' ) || str_starts_with( $nextContent, '#' );
 	}
 
 	private function fixDocBlockComment( Tokens $tokens, int $index ): void
